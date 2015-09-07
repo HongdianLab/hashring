@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"math"
 	"sort"
-	"sync"
 )
 
 type HashKey uint32
@@ -16,7 +15,6 @@ func (h HashKeyOrder) Swap(i, j int)      { h[i], h[j] = h[j], h[i] }
 func (h HashKeyOrder) Less(i, j int) bool { return h[i] < h[j] }
 
 type HashRing struct {
-	sync.RWMutex
 	ring       map[HashKey]string
 	sortedKeys []HashKey
 	nodes      []string
@@ -50,9 +48,6 @@ func NewWithWeights(weights map[string]int) *HashRing {
 }
 
 func (h *HashRing) generateCircle() {
-	h.Lock()
-	defer h.Unlock()
-
 	totalWeight := 0
 	for _, node := range h.nodes {
 		if weight, ok := h.weights[node]; ok {
@@ -100,9 +95,6 @@ func (h *HashRing) GetNodePos(stringKey string) (pos int, ok bool) {
 	}
 
 	key := h.GenKey(stringKey)
-
-	h.RLock()
-	defer h.RUnlock()
 
 	nodes := h.sortedKeys
 	pos = sort.Search(len(nodes), func(i int) bool { return nodes[i] > key })
