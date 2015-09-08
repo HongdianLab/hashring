@@ -1,8 +1,9 @@
 package hashring
 
 import (
-	"crypto/md5"
+	//"crypto/md5"
 	"fmt"
+	"github.com/spaolacci/murmur3"
 	"math"
 	"sort"
 )
@@ -64,16 +65,19 @@ func (h *HashRing) generateCircle() {
 			weight = h.weights[node]
 		}
 
-		factor := math.Floor(float64(40*len(h.nodes)*weight) / float64(totalWeight))
+		factor := math.Floor(float64(10*len(h.nodes)*weight) / float64(totalWeight))
 
 		for j := 0; j < int(factor); j++ {
-			nodeKey := fmt.Sprintf("%s-%d", node, j)
-			bKey := hashDigest(nodeKey)
+			//nodeKey := fmt.Sprintf("%s-%d", node, j)
+			//bKey := hashDigest(nodeKey)
 
-			for i := 0; i < 3; i++ {
-				key := hashVal(bKey[i*4 : i*4+4])
-				h.ring[key] = node
+			for i := 0; i < 10; i++ {
+				nodeKey := fmt.Sprintf("%s-%d", node, j*10+i)
+				key := hashDigest(nodeKey)
+
+				//key := hashVal(bKey[i*4 : i*4+4])
 				h.sortedKeys = append(h.sortedKeys, key)
+				h.ring[key] = node
 			}
 		}
 	}
@@ -109,7 +113,8 @@ func (h *HashRing) GetNodePos(stringKey string) (pos int, ok bool) {
 
 func (h *HashRing) GenKey(key string) HashKey {
 	bKey := hashDigest(key)
-	return hashVal(bKey[0:4])
+	return bKey
+	//return hashVal(bKey[0:4])
 }
 
 func (h *HashRing) AddNode(node string) *HashRing {
@@ -179,8 +184,9 @@ func hashVal(bKey []byte) HashKey {
 		(HashKey(bKey[0])))
 }
 
-func hashDigest(key string) []byte {
-	m := md5.New()
+func hashDigest(key string) HashKey {
+	//m := md5.New()
+	m := murmur3.New32()
 	m.Write([]byte(key))
-	return m.Sum(nil)
+	return HashKey(m.Sum32())
 }
