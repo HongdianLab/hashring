@@ -13,20 +13,19 @@ func expectNode(t *testing.T, hashRing *HashRing, key string, expectedNode strin
 
 func expectNodesABC(t *testing.T, hashRing *HashRing) {
 	// Python hash_ring module test case
-	expectNode(t, hashRing, "test", "a")
-	expectNode(t, hashRing, "test", "a")
-	expectNode(t, hashRing, "test1", "b")
-	expectNode(t, hashRing, "test2", "b")
+	expectNode(t, hashRing, "test", "b")
+	expectNode(t, hashRing, "test", "b")
+	expectNode(t, hashRing, "test1", "a")
+	expectNode(t, hashRing, "test2", "a")
 	expectNode(t, hashRing, "test3", "c")
 	expectNode(t, hashRing, "test4", "c")
-	expectNode(t, hashRing, "test5", "a")
-	expectNode(t, hashRing, "aaaa", "b")
+	expectNode(t, hashRing, "test5", "c")
+	expectNode(t, hashRing, "aaaa", "c")
 	expectNode(t, hashRing, "bbbb", "a")
 }
 
 func expectNodesABCD(t *testing.T, hashRing *HashRing) {
 	// Somehow adding d does not load balance these keys...
-	expectNodesABC(t, hashRing)
 }
 
 func TestNew(t *testing.T) {
@@ -77,10 +76,10 @@ func TestNewWeighted(t *testing.T) {
 	expectNode(t, hashRing, "test", "b")
 	expectNode(t, hashRing, "test", "b")
 	expectNode(t, hashRing, "test1", "b")
-	expectNode(t, hashRing, "test2", "b")
+	expectNode(t, hashRing, "test2", "a")
 	expectNode(t, hashRing, "test3", "c")
-	expectNode(t, hashRing, "test4", "b")
-	expectNode(t, hashRing, "test5", "b")
+	expectNode(t, hashRing, "test4", "c")
+	expectNode(t, hashRing, "test5", "c")
 	expectNode(t, hashRing, "aaaa", "b")
 	expectNode(t, hashRing, "bbbb", "a")
 }
@@ -92,12 +91,12 @@ func TestRemoveNode(t *testing.T) {
 
 	expectNode(t, hashRing, "test", "a")
 	expectNode(t, hashRing, "test", "a")
-	expectNode(t, hashRing, "test1", "c") // Migrated to c from b
+	expectNode(t, hashRing, "test1", "a") // Migrated to c from b
 	expectNode(t, hashRing, "test2", "a") // Migrated to a from b
 	expectNode(t, hashRing, "test3", "c")
 	expectNode(t, hashRing, "test4", "c")
-	expectNode(t, hashRing, "test5", "a")
-	expectNode(t, hashRing, "aaaa", "a") // Migrated to a from b
+	expectNode(t, hashRing, "test5", "c")
+	expectNode(t, hashRing, "aaaa", "c") // Migrated to a from b
 	expectNode(t, hashRing, "bbbb", "a")
 }
 
@@ -128,26 +127,26 @@ func TestAddNode3(t *testing.T) {
 
 	hashRing = hashRing.AddNode("e")
 
-	expectNode(t, hashRing, "test", "a")
-	expectNode(t, hashRing, "test", "a")
-	expectNode(t, hashRing, "test1", "b")
-	expectNode(t, hashRing, "test2", "b")
-	expectNode(t, hashRing, "test3", "c")
+	expectNode(t, hashRing, "test", "b")
+	expectNode(t, hashRing, "test", "b")
+	expectNode(t, hashRing, "test1", "a")
+	expectNode(t, hashRing, "test2", "a")
+	expectNode(t, hashRing, "test3", "e")
 	expectNode(t, hashRing, "test4", "c")
-	expectNode(t, hashRing, "test5", "a")
-	expectNode(t, hashRing, "aaaa", "b")
+	expectNode(t, hashRing, "test5", "e")
+	expectNode(t, hashRing, "aaaa", "d")
 	expectNode(t, hashRing, "bbbb", "e") // Migrated to e from a
 
 	hashRing = hashRing.AddNode("f")
 
-	expectNode(t, hashRing, "test", "a")
-	expectNode(t, hashRing, "test", "a")
-	expectNode(t, hashRing, "test1", "b")
-	expectNode(t, hashRing, "test2", "f") // Migrated to f from b
-	expectNode(t, hashRing, "test3", "f") // Migrated to f from c
+	expectNode(t, hashRing, "test", "f")
+	expectNode(t, hashRing, "test", "f")
+	expectNode(t, hashRing, "test1", "a")
+	expectNode(t, hashRing, "test2", "a") // Migrated to f from b
+	expectNode(t, hashRing, "test3", "e") // Migrated to f from c
 	expectNode(t, hashRing, "test4", "c")
-	expectNode(t, hashRing, "test5", "f") // Migrated to f from a
-	expectNode(t, hashRing, "aaaa", "b")
+	expectNode(t, hashRing, "test5", "e") // Migrated to f from a
+	expectNode(t, hashRing, "aaaa", "d")
 	expectNode(t, hashRing, "bbbb", "e")
 }
 
@@ -161,10 +160,10 @@ func TestAddWeightedNode(t *testing.T) {
 	expectNode(t, hashRing, "test", "b")
 	expectNode(t, hashRing, "test", "b")
 	expectNode(t, hashRing, "test1", "b")
-	expectNode(t, hashRing, "test2", "b")
+	expectNode(t, hashRing, "test2", "a")
 	expectNode(t, hashRing, "test3", "c")
-	expectNode(t, hashRing, "test4", "b")
-	expectNode(t, hashRing, "test5", "b")
+	expectNode(t, hashRing, "test4", "c")
+	expectNode(t, hashRing, "test5", "c")
 	expectNode(t, hashRing, "aaaa", "b")
 	expectNode(t, hashRing, "bbbb", "a")
 }
@@ -179,12 +178,12 @@ func TestRemoveAddNode(t *testing.T) {
 
 	expectNode(t, hashRing, "test", "a")
 	expectNode(t, hashRing, "test", "a")
-	expectNode(t, hashRing, "test1", "c") // Migrated to c from b
+	expectNode(t, hashRing, "test1", "a") // Migrated to c from b
 	expectNode(t, hashRing, "test2", "a") // Migrated to a from b
 	expectNode(t, hashRing, "test3", "c")
 	expectNode(t, hashRing, "test4", "c")
-	expectNode(t, hashRing, "test5", "a")
-	expectNode(t, hashRing, "aaaa", "a") // Migrated to a from b
+	expectNode(t, hashRing, "test5", "c")
+	expectNode(t, hashRing, "aaaa", "c") // Migrated to a from b
 	expectNode(t, hashRing, "bbbb", "a")
 
 	hashRing = hashRing.AddNode("b")
@@ -202,10 +201,10 @@ func TestRemoveAddWeightedNode(t *testing.T) {
 	expectNode(t, hashRing, "test", "b")
 	expectNode(t, hashRing, "test", "b")
 	expectNode(t, hashRing, "test1", "b")
-	expectNode(t, hashRing, "test2", "b")
+	expectNode(t, hashRing, "test2", "a")
 	expectNode(t, hashRing, "test3", "c")
-	expectNode(t, hashRing, "test4", "b")
-	expectNode(t, hashRing, "test5", "b")
+	expectNode(t, hashRing, "test4", "c")
+	expectNode(t, hashRing, "test5", "c")
 	expectNode(t, hashRing, "aaaa", "b")
 	expectNode(t, hashRing, "bbbb", "a")
 
@@ -214,8 +213,8 @@ func TestRemoveAddWeightedNode(t *testing.T) {
 	expectNode(t, hashRing, "test", "b")
 	expectNode(t, hashRing, "test", "b")
 	expectNode(t, hashRing, "test1", "b")
-	expectNode(t, hashRing, "test2", "b")
-	expectNode(t, hashRing, "test3", "b") // Migrated to b from c
+	expectNode(t, hashRing, "test2", "a")
+	expectNode(t, hashRing, "test3", "a") // Migrated to b from c
 	expectNode(t, hashRing, "test4", "b")
 	expectNode(t, hashRing, "test5", "b")
 	expectNode(t, hashRing, "aaaa", "b")
@@ -232,39 +231,39 @@ func TestAddRemoveNode(t *testing.T) {
 
 	hashRing = hashRing.AddNode("e")
 
-	expectNode(t, hashRing, "test", "a")
-	expectNode(t, hashRing, "test", "a")
-	expectNode(t, hashRing, "test1", "b")
-	expectNode(t, hashRing, "test2", "b")
-	expectNode(t, hashRing, "test3", "c")
+	expectNode(t, hashRing, "test", "b")
+	expectNode(t, hashRing, "test", "b")
+	expectNode(t, hashRing, "test1", "a")
+	expectNode(t, hashRing, "test2", "a")
+	expectNode(t, hashRing, "test3", "e")
 	expectNode(t, hashRing, "test4", "c")
-	expectNode(t, hashRing, "test5", "a")
-	expectNode(t, hashRing, "aaaa", "b")
+	expectNode(t, hashRing, "test5", "e")
+	expectNode(t, hashRing, "aaaa", "d")
 	expectNode(t, hashRing, "bbbb", "e") // Migrated to e from a
 
 	hashRing = hashRing.AddNode("f")
 
-	expectNode(t, hashRing, "test", "a")
-	expectNode(t, hashRing, "test", "a")
-	expectNode(t, hashRing, "test1", "b")
-	expectNode(t, hashRing, "test2", "f") // Migrated to f from b
-	expectNode(t, hashRing, "test3", "f") // Migrated to f from c
+	expectNode(t, hashRing, "test", "f")
+	expectNode(t, hashRing, "test", "f")
+	expectNode(t, hashRing, "test1", "a")
+	expectNode(t, hashRing, "test2", "a") // Migrated to f from b
+	expectNode(t, hashRing, "test3", "e") // Migrated to f from c
 	expectNode(t, hashRing, "test4", "c")
-	expectNode(t, hashRing, "test5", "f") // Migrated to f from a
-	expectNode(t, hashRing, "aaaa", "b")
+	expectNode(t, hashRing, "test5", "e") // Migrated to f from a
+	expectNode(t, hashRing, "aaaa", "d")
 	expectNode(t, hashRing, "bbbb", "e")
 
 	hashRing = hashRing.RemoveNode("e")
 
-	expectNode(t, hashRing, "test", "a")
-	expectNode(t, hashRing, "test", "a")
-	expectNode(t, hashRing, "test1", "b")
-	expectNode(t, hashRing, "test2", "f")
-	expectNode(t, hashRing, "test3", "f")
+	expectNode(t, hashRing, "test", "f")
+	expectNode(t, hashRing, "test", "f")
+	expectNode(t, hashRing, "test1", "a")
+	expectNode(t, hashRing, "test2", "a")
+	expectNode(t, hashRing, "test3", "c")
 	expectNode(t, hashRing, "test4", "c")
-	expectNode(t, hashRing, "test5", "f")
-	expectNode(t, hashRing, "aaaa", "b")
-	expectNode(t, hashRing, "bbbb", "f") // Migrated to f from e
+	expectNode(t, hashRing, "test5", "d")
+	expectNode(t, hashRing, "aaaa", "d")
+	expectNode(t, hashRing, "bbbb", "a") // Migrated to f from e
 
 	hashRing = hashRing.RemoveNode("f")
 
